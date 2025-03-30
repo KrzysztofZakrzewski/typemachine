@@ -97,8 +97,8 @@ def transcribe_audio_to_words(audio_bytes, language=st.session_state['language_i
 #
 # MAIN
 #
-st.set_page_config(page_title="TypeMachine", layout="centered")
-st.title("Apka do generowałnia napisów: TypeMachine 📄🖋️")
+st.set_page_config(page_title="SubMachine", layout="centered")
+st.title("Apka do generowałnia napisów: SubMachine 📄🖋️")
 
 
 with st.expander("📖 Instrukcja (kliknij, aby rozwinąć)"):
@@ -109,7 +109,7 @@ with st.expander("📖 Instrukcja (kliknij, aby rozwinąć)"):
     3. Następnie wciśnij przycisk "Wygeneruj Audio" i sprawdź wy wygenerowało się poprawnie.
     4. Pojawi się tekst z filmu, który został zauplodowany
     5. Możesz go zmodyfikować, ale pamiętaj aby wcisnąć CRTL+ENTER aby zatwierdzić zmiany
-    6. Po wciścięciu przycsku "Pobierz transkrypcję jako plik .txt" plik zostanie zapisany na twoim dysku
+    6. Po wciścięciu przycsku "Pobierz transkrypcję jako plik .srt" plik zostanie zapisany na twoim dysku
     """)
 
 
@@ -160,7 +160,7 @@ if uploaded_file is not None:
             value=st.session_state["audio_as_text"],
             # disabled=True,
         )
-            # Dodanie przycisku do pobrania tekstu jako plik .txt
+            # Dodanie przycisku do pobrania tekstu jako plik .srt
     st.download_button(
         label="Pobierz transkrypcję jako plik .srt",
         data= edited_text if 'edited_text' in locals() else st.session_state["audio_as_text"], #st.session_state["audio_as_text"],  # Zawartość do zapisania
