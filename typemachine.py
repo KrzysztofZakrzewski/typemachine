@@ -98,7 +98,7 @@ def transcribe_audio_to_words(audio_bytes, language=st.session_state['language_i
 # MAIN
 #
 st.set_page_config(page_title="TypeMachine", layout="centered")
-st.title("Apka do gengerowałnia napisów: TypeMachine 📄🖋️")
+st.title("Apka do generowałnia napisów: TypeMachine 📄🖋️")
 
 
 with st.expander("📖 Instrukcja (kliknij, aby rozwinąć)"):
