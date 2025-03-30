@@ -89,7 +89,7 @@ def transcribe_audio_to_words(audio_bytes, language=st.session_state['language_i
         file=audio_file,
         model=AUDIO_TRANSCRIBE_MODEL,
         language=language,
-        response_format="verbose_json",  # tu se mogę zmienić na SRT ale trzeba usunąć TEXT z RETURNA I NA DOLE rzzy zapisie zamias txt też SRT !!!!! ONEONEONE
+        response_format="srt",  # tu se mogę zmienić na SRT ale trzeba usunąć TEXT z RETURNA I NA DOLE rzzy zapisie zamias txt też SRT !!!!! ONEONEONE
     )
 
     return transcript.text
@@ -162,10 +162,10 @@ if uploaded_file is not None:
         )
             # Dodanie przycisku do pobrania tekstu jako plik .txt
     st.download_button(
-        label="Pobierz transkrypcję jako plik .txt",
+        label="Pobierz transkrypcję jako plik .srt",
         data= edited_text if 'edited_text' in locals() else st.session_state["audio_as_text"], #st.session_state["audio_as_text"],  # Zawartość do zapisania
         # Wykorzystanie nazwy pliku do tworzenia liter
-        file_name=f"{file_name_without_ext}.txt",  # Nazwa pliku   # Można też jako SRT
+        file_name=f"{file_name_without_ext}.srt",  # Nazwa pliku   # Można też jako SRT
         mime="text/plain",  # Typ MIME dla pliku tekstowego
     )
 
