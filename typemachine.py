@@ -11,6 +11,7 @@ from hashlib import md5
 # import tempfile
 import os
 # import io
+# from IPython.display import Markdown
 
 
 env = dotenv_values(".env")
@@ -19,7 +20,6 @@ AUDIO_TRANSCRIBE_MODEL = "whisper-1"
 
 # openai_client = OpenAI(api_key=env["OPENAI_API_KEY"])
 
-from IPython.display import Markdown
 
 def get_openai_client():
     return OpenAI(api_key=st.session_state["openai_api_key"])
