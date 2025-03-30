@@ -92,7 +92,7 @@ def transcribe_audio_to_words(audio_bytes, language=st.session_state['language_i
         response_format="srt",  # tu se mogę zmienić na SRT ale trzeba usunąć TEXT z RETURNA I NA DOLE rzzy zapisie zamias txt też SRT !!!!! ONEONEONE
     )
 
-    return transcript.text
+    return transcript
 
 #
 # MAIN
