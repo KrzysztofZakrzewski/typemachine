@@ -107,9 +107,9 @@ with st.expander("📖 Instrukcja (kliknij, aby rozwinąć)"):
     1. Może wybrać język na jaki zostanie przetłumaczony tekst z filmiku wpisująć kod ISO języka.
     2. W polu "wgraj plik wideo" wrzuć filmik, z którego chcesz wyekstrachować tekst.
     3. Następnie wciśnij przycisk "Wygeneruj Audio" i sprawdź wy wygenerowało się poprawnie.
-    4. Pojawi się tekst z filmu, który został zauplodowany
-    5. Możesz go zmodyfikować, ale pamiętaj aby wcisnąć CRTL+ENTER aby zatwierdzić zmiany
-    6. Po wciścięciu przycsku "Pobierz transkrypcję jako plik .srt" plik zostanie zapisany na twoim dysku
+    4. Następnie wciśnij przycisk "Transkrypcja audio", pojawi się tekst z filmu, który został zauplodowany.
+    5. Możesz go zmodyfikować, ale pamiętaj aby wcisnąć CRTL+ENTER aby zatwierdzić zmiany.
+    6. Po wciścięciu przycsku "Pobierz transkrypcję jako plik .srt" plik zostanie zapisany na twoim dysku.
     """)
 
 
