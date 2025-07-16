@@ -1,7 +1,7 @@
 import streamlit as st
 from pydub import AudioSegment
 # from IPython.display import Audio
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 from openai import OpenAI
 # from audiorecorder import audiorecorder 
 from io import BytesIO
@@ -14,7 +14,8 @@ import os
 # from IPython.display import Markdown
 
 
-env = dotenv_values(".env")
+# env = dotenv_values(".env")
+load_dotenv()
 
 AUDIO_TRANSCRIBE_MODEL = "whisper-1"
 
@@ -22,22 +23,27 @@ AUDIO_TRANSCRIBE_MODEL = "whisper-1"
 
 
 def get_openai_client():
-    return OpenAI(api_key=st.session_state["openai_api_key"])
+    return OpenAI(api_key=os.environ["openai_api_key"])
 # @st.cache_resource
 
 
-if not st.session_state.get("openai_api_key"):
-    if "OPENAI_API_KEY" in env:
-        st.session_state["openai_api_key"] = env["OPENAI_API_KEY"]
-
-    else:
-        st.info("Dodaj swój klucz API OpenAI aby móc korzystać z tej aplikacji")
-        st.session_state["openai_api_key"] = st.text_input("Klucz API", type="password")
-        if st.session_state["openai_api_key"]:
-            st.rerun()
-
-if not st.session_state.get("openai_api_key"):
+# Sprawdź, czy klucz API jest ustawiony
+if "OPENAI_API_KEY" not in os.environ:
+    st.error("Nie znaleziono klucza API OpenAI.")
     st.stop()
+
+# if not st.session_state.get("openai_api_key"):
+#     if "OPENAI_API_KEY" in env:
+#         st.session_state["openai_api_key"] = env["OPENAI_API_KEY"]
+
+#     else:
+#         st.info("Dodaj swój klucz API OpenAI aby móc korzystać z tej aplikacji")
+#         st.session_state["openai_api_key"] = st.text_input("Klucz API", type="password")
+#         if st.session_state["openai_api_key"]:
+#             st.rerun()
+
+# if not st.session_state.get("openai_api_key"):
+#     st.stop()
 
 # # ### # #
 # Obsługa st.session_state
