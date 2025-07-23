@@ -23,7 +23,7 @@ AUDIO_TRANSCRIBE_MODEL = "whisper-1"
 
 
 def get_openai_client():
-    return OpenAI(api_key=os.environ["openai_api_key"])
+    return OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 # @st.cache_resource
 
 
