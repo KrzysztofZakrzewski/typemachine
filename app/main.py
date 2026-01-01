@@ -13,34 +13,46 @@ import os
 # import io
 # from IPython.display import Markdown
 
+from audio.extract import generate_audio
+from ai.transcrible import transcribe_audio_to_words
 
-env = dotenv_values(".env")
+# ======================
+# CONFIGURATION
+# ======================
 
-AUDIO_TRANSCRIBE_MODEL = "whisper-1"
+# --- Reading keys from env file ---
+env = dotenv_values("../.env")
+
+# --- AI Model ---
+# AUDIO_TRANSCRIBE_MODEL = "whisper-1"
 
 # openai_client = OpenAI(api_key=env["OPENAI_API_KEY"])
 
-
+# --- Load keys from env file ---
 def get_openai_client():
     return OpenAI(api_key=st.session_state["openai_api_key"])
+# openai_client = get_openai_client()
 # @st.cache_resource
 
-
+# --- Handling missing .env key ---
 if not st.session_state.get("openai_api_key"):
     if "OPENAI_API_KEY" in env:
         st.session_state["openai_api_key"] = env["OPENAI_API_KEY"]
-
+    
+    # Adding a key manually
     else:
         st.info("Dodaj swój klucz API OpenAI aby móc korzystać z tej aplikacji")
         st.session_state["openai_api_key"] = st.text_input("Klucz API", type="password")
         if st.session_state["openai_api_key"]:
             st.rerun()
 
+# STOP app if the is no key
 if not st.session_state.get("openai_api_key"):
     st.stop()
 
-# # ### # #
-# Obsługa st.session_state
+# ======================
+# Handling session state
+# ======================
 
 if 'audio_as_bytes_md_5_check' not in st.session_state:
     st.session_state['audio_as_bytes_md_5_check'] = None
@@ -55,52 +67,15 @@ if 'audio_as_text' not in st.session_state:
 if 'language_iso' not in st.session_state:
     st.session_state['language_iso'] = 'pl'
 
-def generate_audio(uploaded_file):
-    try:
-        # Tworzenie obiektu AudioSegment z pliku wideo
-        audio_from_video_file = AudioSegment.from_file(uploaded_file)
-
-        # Eksport audio_from_video_file do formatu MP3 jako BytesIO
-        audio = BytesIO()
-        audio_from_video_file.export(audio, format="mp3")
-        audio.seek(0)  # Cofnij wskaźnik do początku bufora
-        # audio_as_bytes = audio.getvalue()
-
-        # Przechowaj dane audio w st.session_state
-        st.session_state['audio_as_bytes'] = audio.getvalue()  # Zapisz tylko dane bajtowe
-
-
-        # st.audio(st.session_state['audio_as_bytes'], format='audio/mp3')
-
-        return True
-    except Exception as e:
-        st.error(f"Błąd podczas przetwarzania audio: {e}")
-        return False
-    
-#
-# WHISPER-1 
-#
-
-def transcribe_audio_to_words(audio_bytes, language=st.session_state['language_iso']):
-    openai_client = get_openai_client()
-    audio_file = BytesIO(audio_bytes)
-    audio_file.name = "audio.mp3"
-    transcript = openai_client.audio.transcriptions.create(
-        file=audio_file,
-        model=AUDIO_TRANSCRIBE_MODEL,
-        language=language,
-        response_format="srt",  # tu se mogę zmienić na SRT ale trzeba usunąć TEXT z RETURNA I NA DOLE rzzy zapisie zamias txt też SRT !!!!! ONEONEONE
-    )
-
-    return transcript
-
-#
+# ======================
 # MAIN
-#
+# ======================
+
+# --- Title ---
 st.set_page_config(page_title="TypeMachine", layout="centered")
 st.title("Apka do generowania napisów: TypeMachine 📄🖋️")
 
-
+# --- Instrucrion ---
 with st.expander("📖 Instrukcja (kliknij, aby rozwinąć)"):
     st.write("""
              Po wpisaniu klucza od OpenAI, użytkownik (ty):
@@ -112,29 +87,27 @@ with st.expander("📖 Instrukcja (kliknij, aby rozwinąć)"):
     6. Po wciścięciu przycsku "Pobierz transkrypcję jako plik .srt" plik zostanie zapisany na twoim dysku.
     """)
 
-
-# Pole do wpisywania interesującego języka
-# language_iso = st.text_input("Wprowadź kod ISO języka na który chcesz przetłumaczyć(np. 'pl', 'en', 'de'):", value='pl')
+# --- Input field for entering the language of interest ---
 st.session_state['language_iso'] = st.text_input(
     "Wprowadź kod ISO języka na który chcesz przetłumaczyć (np. 'pl', 'en', 'de'):",
     value=st.session_state['language_iso']
 )
 
-
 uploaded_file = st.file_uploader("Wgraj plik wideo", type=['flac', 'm4a', 'mp3', 'mp4', 'wav', 'ogg', 'aac', 'mpga', 'avi', 'mov', 'wmv', 'webm', 'mkv'])
 
-
-
+# ======================
+# INTERFACE AND DISPLAY
+# ======================
 if uploaded_file is not None:
-    # Wyświetlenie odtwarzanego wideo
+    # --- Display the video being played ---
     st.video(uploaded_file)
-        # Pobranie pełnej nazwy pliku
-    file_name = uploaded_file.name  # np. "moj_film.mp4"
+    # Getting the full video name
+    file_name = uploaded_file.name  # exemp. "moj_film.mp4"
     
-    # Usunięcie rozszerzenia
+    # Removing the extension from the name of the loaded video
     file_name_without_ext = os.path.splitext(file_name)[0]
 
-    # Interface do generowania audio
+    # --- Interface for generating audio ---
     if st.button("Wygeneruj audio"):
         generate_audio(uploaded_file)
         # !!!!! NIE mam pojęcia dlaczego to nie działało w funcji !!!!! #
@@ -144,29 +117,34 @@ if uploaded_file is not None:
             st.session_state["audio_as_bytes_md_5_check"] = current_md5
 
 
-    # Wyświetlenie playera audio w stałym miejscu (jeśli dane istnieją)
+    # --- Display audio player in fixed location (if data exists) ---
     if st.session_state['audio_as_bytes']:
         st.audio(st.session_state['audio_as_bytes'], format='audio/mp3')
 
-    # Przyciski transkrypcji
+    # --- Transcription buttons ---
     if st.session_state['audio_as_bytes']:
         if st.button("Transkrybuj audio"):
-            st.session_state["audio_as_text"] = transcribe_audio_to_words(st.session_state["audio_as_bytes"])
+            # --- Call the "transcribe audio_to_words" function with "get_openai_client" as an argument to load the key --- 
+            st.session_state["audio_as_text"] = transcribe_audio_to_words(
+                                                st.session_state["audio_as_bytes"],
+                                                get_openai_client(),
+                                                language=st.session_state['language_iso'],
+                                                response_format='srt')
 
-    # Wyświetlenie transkrypcji
+    # --- Transcript display ---
     if st.session_state["audio_as_text"]:
         edited_text = st.text_area(
             "Transkrypcja audio",
             value=st.session_state["audio_as_text"],
             # disabled=True,
         )
-            # Dodanie przycisku do pobrania tekstu jako plik .srt
+    # --- Button to download the text as an SRT file ---
     st.download_button(
         label="Pobierz transkrypcję jako plik .srt",
-        data= edited_text if 'edited_text' in locals() else st.session_state["audio_as_text"], #st.session_state["audio_as_text"],  # Zawartość do zapisania
-        # Wykorzystanie nazwy pliku do tworzenia liter
-        file_name=f"{file_name_without_ext}.srt",  # Nazwa pliku   # Można też jako SRT
-        mime="text/plain",  # Typ MIME dla pliku tekstowego
+        data= edited_text if 'edited_text' in locals() else st.session_state["audio_as_text"],  # Zawartość do zapisania
+        # --- Using the filename to create the translation filename ---
+        file_name=f"{file_name_without_ext}.srt",  # file name
+        mime="text/plain",  # MIME type for text file
     )
 
 else:
