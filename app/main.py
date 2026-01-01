@@ -14,7 +14,8 @@ import os
 # from IPython.display import Markdown
 
 from audio.extract import generate_audio
-from ai.transcrible import transcribe_audio_to_words
+from ai.transcrible import (transcribe_audio_to_words,
+                            detect_audio_language)
 
 # ======================
 # CONFIGURATION
@@ -66,6 +67,11 @@ if 'audio_as_text' not in st.session_state:
 # Obsługa języka
 if 'language_iso' not in st.session_state:
     st.session_state['language_iso'] = 'pl'
+
+# if 'language_recognition' not in st.session_state:
+    # st.session_state['language_recognition'] = None
+
+st.session_state.setdefault("language_recognition", "")
 
 # ======================
 # MAIN
@@ -121,8 +127,20 @@ if uploaded_file is not None:
     if st.session_state['audio_as_bytes']:
         st.audio(st.session_state['audio_as_bytes'], format='audio/mp3')
 
-    # --- Transcription buttons ---
+    # --- Language recognition buttons ---
     if st.session_state['audio_as_bytes']:
+
+        if st.button("wykryj język"):
+            st.session_state['language_recognition'] = detect_audio_language(
+                                                st.session_state["audio_as_bytes"],
+                                                get_openai_client())
+
+        # Display language recognition
+        if st.session_state['language_recognition']:
+            st.write('Wykryto język')
+            st.code(st.session_state["language_recognition"])
+
+        # --- Transcription buttons ---
         if st.button("Transkrybuj audio"):
             # --- Call the "transcribe audio_to_words" function with "get_openai_client" as an argument to load the key --- 
             st.session_state["audio_as_text"] = transcribe_audio_to_words(
