@@ -66,7 +66,7 @@ if 'audio_as_text' not in st.session_state:
 
 # Obsługa języka
 if 'language_iso' not in st.session_state:
-    st.session_state['language_iso'] = 'pl'
+    st.session_state['language_iso'] = ''
 
 # if 'language_recognition' not in st.session_state:
     # st.session_state['language_recognition'] = None
@@ -93,11 +93,11 @@ with st.expander("📖 Instrukcja (kliknij, aby rozwinąć)"):
     6. Po wciścięciu przycsku "Pobierz transkrypcję jako plik .srt" plik zostanie zapisany na twoim dysku.
     """)
 
-# --- Input field for entering the language of interest ---
-st.session_state['language_iso'] = st.text_input(
-    "Wprowadź kod ISO języka na który chcesz przetłumaczyć (np. 'pl', 'en', 'de'):",
-    value=st.session_state['language_iso']
-)
+# # --- Input field for entering the language of interest ---
+# st.session_state['language_iso'] = st.text_input(
+#     "Wprowadź kod ISO języka na który chcesz przetłumaczyć (np. 'pl', 'en', 'de'):",
+#     value=st.session_state['language_iso']
+# )
 
 uploaded_file = st.file_uploader("Wgraj plik wideo", type=['flac', 'm4a', 'mp3', 'mp4', 'wav', 'ogg', 'aac', 'mpga', 'avi', 'mov', 'wmv', 'webm', 'mkv'])
 
@@ -148,7 +148,7 @@ if uploaded_file is not None:
                                                 get_openai_client(),
                                                 language=st.session_state['language_iso'],
                                                 response_format='srt')
-
+            
     # --- Transcript display ---
     if st.session_state["audio_as_text"]:
         edited_text = st.text_area(
@@ -156,6 +156,13 @@ if uploaded_file is not None:
             value=st.session_state["audio_as_text"],
             # disabled=True,
         )
+    
+    # --- Input field for entering the language of interest ---
+    st.session_state['language_iso'] = st.text_input(
+    "Wprowadź kod ISO języka na który chcesz przetłumaczyć (np. 'pl', 'en', 'de'):",
+    value=st.session_state['language_iso']
+    )
+
     # --- Button to download the text as an SRT file ---
     st.download_button(
         label="Pobierz transkrypcję jako plik .srt",
