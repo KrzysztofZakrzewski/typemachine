@@ -130,8 +130,8 @@ if uploaded_file is not None:
     # --- Language recognition buttons ---
     if st.session_state['audio_as_bytes']:
 
-        if st.button("wykryj język"):
-            st.session_state['language_recognition'] = detect_audio_language(
+        # if st.button("wykryj język"):
+        st.session_state['language_recognition'] = detect_audio_language(
                                                 st.session_state["audio_as_bytes"],
                                                 get_openai_client())
 
@@ -157,11 +157,11 @@ if uploaded_file is not None:
             # disabled=True,
         )
     
-    # --- Input field for entering the language of interest ---
-    st.session_state['language_iso'] = st.text_input(
-    "Wprowadź kod ISO języka na który chcesz przetłumaczyć (np. 'pl', 'en', 'de'):",
-    value=st.session_state['language_iso']
-    )
+        # --- Input field for entering the language of interest ---
+        st.session_state['language_iso'] = st.text_input(
+        "Wprowadź kod ISO języka na który chcesz przetłumaczyć (np. 'pl', 'en', 'de'):",
+        value=st.session_state['language_iso']
+        )
 
     # --- Button to download the text as an SRT file ---
     st.download_button(
