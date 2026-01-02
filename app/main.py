@@ -15,7 +15,8 @@ import os
 
 from audio.extract import generate_audio
 from ai.transcrible import (transcribe_audio_to_words,
-                            detect_audio_language)
+                            detect_audio_language,
+                            translate_script)
 
 # ======================
 # CONFIGURATION
@@ -68,6 +69,9 @@ if 'audio_as_text' not in st.session_state:
 if 'language_iso' not in st.session_state:
     st.session_state['language_iso'] = ''
 
+if 'script_for_translation' not in st.session_state:
+    st.session_state['script_for_translation'] = ''
+
 # if 'language_recognition' not in st.session_state:
     # st.session_state['language_recognition'] = None
 
@@ -92,12 +96,6 @@ with st.expander("📖 Instrukcja (kliknij, aby rozwinąć)"):
     5. Możesz go zmodyfikować, ale pamiętaj aby wcisnąć CRTL+ENTER aby zatwierdzić zmiany.
     6. Po wciścięciu przycsku "Pobierz transkrypcję jako plik .srt" plik zostanie zapisany na twoim dysku.
     """)
-
-# # --- Input field for entering the language of interest ---
-# st.session_state['language_iso'] = st.text_input(
-#     "Wprowadź kod ISO języka na który chcesz przetłumaczyć (np. 'pl', 'en', 'de'):",
-#     value=st.session_state['language_iso']
-# )
 
 uploaded_file = st.file_uploader("Wgraj plik wideo", type=['flac', 'm4a', 'mp3', 'mp4', 'wav', 'ogg', 'aac', 'mpga', 'avi', 'mov', 'wmv', 'webm', 'mkv'])
 
@@ -146,7 +144,7 @@ if uploaded_file is not None:
             st.session_state["audio_as_text"] = transcribe_audio_to_words(
                                                 st.session_state["audio_as_bytes"],
                                                 get_openai_client(),
-                                                language=st.session_state['language_iso'],
+                                                # language=st.session_state['language_iso'],
                                                 response_format='srt')
             
     # --- Transcript display ---
@@ -162,6 +160,20 @@ if uploaded_file is not None:
         "Wprowadź kod ISO języka na który chcesz przetłumaczyć (np. 'pl', 'en', 'de'):",
         value=st.session_state['language_iso']
         )
+
+        # ======================
+        # TRANSLATION INTERFACE AND DISPLAY
+        # ======================
+        # --- Transaltion button ---
+        if st.button('Przetłumacz'):
+            st.session_state['script_for_translation'] = translate_script(get_openai_client(),
+                                                                          st.session_state['language_iso'],
+                                                                          st.session_state["audio_as_text"])
+            if st.session_state['script_for_translation']:
+                translated_edited_text = st.text_area(
+                    'Przetłumaczony scrypt',
+                    value=st.session_state['script_for_translation']
+                )
 
     # --- Button to download the text as an SRT file ---
     st.download_button(
