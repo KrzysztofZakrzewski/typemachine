@@ -3,11 +3,14 @@ The application for generating subtitles from short videos.
 
 ## Instructions:
 After entering your OpenAI key, you (the user) can: 
-1. Choose the target language for translation by entering the ISO language code.
-2. Upload a video file in the “Upload video file” field — this is the video from which you want to extract text.
-3. Click the “Generate Audio” button and check if the audio was generated correctly.
-4. The extracted text from the uploaded video will appear.
-5. You can modify the text, but remember to press CTRL+ENTER to confirm any changes. 6. After clicking the “Download transcription as .srt file” button, the file will be saved to your drive.
+1. In the "Upload Video" field, upload the video from which you want to extract text.
+2. Then press the "Generate Audio" button and check if the audio was generated correctly.
+3. Next, press the "Audio Transcription" button — the text from the uploaded video will appear.
+4. You can modify it, but remember to press CTRL + ENTER to confirm your changes.
+5. Enter the language you want to translate the script into (by default, it will be Polish).
+6. Press the "Translate" button to generate a translation in SRT file format.
+7. The translated text can also be modified and confirmed with CTRL + ENTER.
+8. You can download both the translated version and the original.
 
 ## quick-spec:
 Python 3.11.11
@@ -31,3 +34,20 @@ Also in use:
 
 
 # In the future, the application will be expanded with new functionalities and its usability and performance will be improved.
+
+Project Structure
+=================
+app/
+│
+├── ai/
+│   └── transcrible.py
+│
+├── audio/
+│   └── extract.py
+│
+├── config/
+│   └── settings.py
+│
+└── main.py
+
+<pre> ```text Project Structure ================= app/ │ ├── ai/ │ └── transcrible.py │ ├── audio/ │ └── extract.py │ ├── config/ │ └── settings.py │ └── main.py ``` </pre>
