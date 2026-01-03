@@ -25,11 +25,6 @@ from ai.transcrible import (transcribe_audio_to_words,
 # --- Reading keys from env file ---
 env = dotenv_values("../.env")
 
-# --- AI Model ---
-# AUDIO_TRANSCRIBE_MODEL = "whisper-1"
-
-# openai_client = OpenAI(api_key=env["OPENAI_API_KEY"])
-
 # --- Load keys from env file ---
 def get_openai_client():
     return OpenAI(api_key=st.session_state["openai_api_key"])
@@ -112,6 +107,7 @@ if uploaded_file is not None:
     file_name_without_ext = os.path.splitext(file_name)[0]
 
     # --- Interface for generating audio ---
+    # --- MD5 ---
     if st.button("Wygeneruj audio"):
         generate_audio(uploaded_file)
         # !!!!! NIE mam pojęcia dlaczego to nie działało w funcji !!!!! #
@@ -151,7 +147,6 @@ if uploaded_file is not None:
     if st.session_state["audio_as_text"]:
         orginal_edited_text = st.text_area(
             "Transkrypcja audio",
-            value = st.session_state["audio_as_text"],
             # key links the UI component with st.session_state["audio_as_text"]
             key = "audio_as_text"
         )
@@ -173,7 +168,6 @@ if uploaded_file is not None:
         if st.session_state['script_for_translation']:
             translated_edited_text = st.text_area(
                 'Przetłumaczony scrypt',
-                value = st.session_state['script_for_translation'],
                 # Key links the UI component with st.session_state["script_for_translation"]
                 key = 'script_for_translation'
             )
@@ -181,7 +175,7 @@ if uploaded_file is not None:
         # --- Button to download the orginal text as an SRT file ---
         st.download_button(
             label = "Pobierz orginalną transkrypcję jako plik .srt",
-            data = orginal_edited_text if 'orginal_edited_text' in locals() else st.session_state["audio_as_text"],  # Zawartość do zapisania
+            data = orginal_edited_text if 'orginal_edited_text' in locals() else st.session_state["audio_as_text"],  # Content to save
             # --- Using the filename to create the translation filename ---
             file_name = f"{file_name_without_ext}.srt",  # file name
             mime = "text/plain",  # MIME type for text file
@@ -190,7 +184,7 @@ if uploaded_file is not None:
         # --- Button to download the translated text as an SRT file ---
         st.download_button(
             label = "Pobierz przetłumaczoną transkrypcję jako plik .srt",
-            data = translated_edited_text if 'translated_edited_text' in locals() else st.session_state["script_for_translation"],  # Zawartość do zapisania
+            data = translated_edited_text if 'translated_edited_text' in locals() else st.session_state["script_for_translation"],  # Content to save
             # --- Using the filename to create the translation filename ---
             file_name = f"{file_name_without_ext}.srt",  # file name
             mime = "text/plain",  # MIME type for text file
