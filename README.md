@@ -61,8 +61,7 @@ After entering your OpenAI key, you (the user) can:
 
 ## 🔄 Application Flow
 
-```mermaid
-flowchart TD
+```
     A[Upload Video] --> B[Extract Audio (ffmpeg)]
     B --> C[Generate Audio File]
     C --> D[Audio Transcription (OpenAI)]
