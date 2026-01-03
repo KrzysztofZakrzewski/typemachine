@@ -10,7 +10,6 @@ from hashlib import md5
 # import subprocess
 # import tempfile
 import os
-# import io
 # from IPython.display import Markdown
 
 from audio.extract import generate_audio
@@ -61,8 +60,8 @@ if 'audio_as_text' not in st.session_state:
     st.session_state['audio_as_text'] = ''
 
 # Obsługa języka
-if 'language_iso' not in st.session_state:
-    st.session_state['language_iso'] = ''
+if 'destination_language' not in st.session_state:
+    st.session_state['destination_language'] = 'polski'
 
 if 'script_for_translation' not in st.session_state:
     st.session_state['script_for_translation'] = ''
@@ -84,14 +83,19 @@ st.title("Apka do generowania napisów: TypeMachine 📄🖋️")
 with st.expander("📖 Instrukcja (kliknij, aby rozwinąć)"):
     st.write("""
              Po wpisaniu klucza od OpenAI, użytkownik (ty):
-    1. Może wybrać język na jaki zostanie przetłumaczony tekst z filmiku wpisująć kod ISO języka.
-    2. W polu "wgraj plik wideo" wrzuć filmik, z którego chcesz wyekstrachować tekst.
-    3. Następnie wciśnij przycisk "Wygeneruj Audio" i sprawdź wy wygenerowało się poprawnie.
-    4. Następnie wciśnij przycisk "Transkrypcja audio", pojawi się tekst z filmu, który został zauplodowany.
-    5. Możesz go zmodyfikować, ale pamiętaj aby wcisnąć CRTL+ENTER aby zatwierdzić zmiany.
-    6. Po wciścięciu przycsku "Pobierz transkrypcję jako plik .srt" plik zostanie zapisany na twoim dysku.
+    1. W polu "wgraj plik wideo" wrzuć filmik, z którego chcesz wyekstrachować tekst.
+    2. Następnie wciśnij przycisk "Wygeneruj Audio" i sprawdź wy wygenerowało się poprawnie.
+    3. Następnie wciśnij przycisk "Transkrypcja audio", pojawi się tekst z filmu, który został zauplodowany.
+    4. Możesz go zmodyfikować, ale pamiętaj aby wcisnąć CRTL + ENTER aby zatwierdzić zmiany.
+    5. Wpisz na jaki język chcesz przetłumaczyć scrypt (domyślnie będzie język polski).
+    6. Przycisk "Przetłumacz" wygeneruje tłumaczenie w formie pliku srt.
+    7. Przetłumaczony tekst też mozna zmodyfikować i zatwierdzić CRTL + ENTER.
+    8. Możesz pobrać przetłumaczoną wersję i orginalną.
     """)
 
+# ======================
+# VIDEO UPLOADER
+# ======================
 uploaded_file = st.file_uploader("Wgraj plik wideo", type=['flac', 'm4a', 'mp3', 'mp4', 'wav', 'ogg', 'aac', 'mpga', 'avi', 'mov', 'wmv', 'webm', 'mkv'])
 
 # ======================
@@ -140,7 +144,6 @@ if uploaded_file is not None:
             st.session_state["audio_as_text"] = transcribe_audio_to_words(
                                                 st.session_state["audio_as_bytes"],
                                                 get_openai_client(),
-                                                # language=st.session_state['language_iso'],
                                                 response_format='srt')
             
     # --- Transcript display ---
@@ -152,9 +155,9 @@ if uploaded_file is not None:
         )
     
         # --- Input field for entering the language of interest ---
-        st.session_state['language_iso'] = st.text_input(
-        "Wprowadź kod ISO języka na który chcesz przetłumaczyć (np. 'pl', 'en', 'de'):",
-        value = st.session_state['language_iso']
+        st.session_state['destination_language'] = st.text_input(
+        'Napisz na jaki język chcesz przetłumaczyć (domyślnie jest ustawiony "polski"):',
+        value = st.session_state['destination_language']
         )
 
         # ======================
@@ -163,8 +166,9 @@ if uploaded_file is not None:
         # --- Transaltion button ---
         if st.button('Przetłumacz'):
             st.session_state['script_for_translation'] = translate_script(get_openai_client(),
-                                                                          st.session_state['language_iso'],
-                                                                          st.session_state["audio_as_text"])
+                                                                          st.session_state['destination_language'],
+                                                                          st.session_state["audio_as_text"],
+                                                                          st.session_state['language_recognition'])
         if st.session_state['script_for_translation']:
             translated_edited_text = st.text_area(
                 'Przetłumaczony scrypt',
