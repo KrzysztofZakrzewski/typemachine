@@ -151,14 +151,15 @@ if uploaded_file is not None:
     if st.session_state["audio_as_text"]:
         orginal_edited_text = st.text_area(
             "Transkrypcja audio",
-            value=st.session_state["audio_as_text"],
-            # disabled=True,
+            value = st.session_state["audio_as_text"],
+            # key links the UI component with st.session_state["audio_as_text"]
+            key = "audio_as_text"
         )
     
         # --- Input field for entering the language of interest ---
         st.session_state['language_iso'] = st.text_input(
         "Wprowadź kod ISO języka na który chcesz przetłumaczyć (np. 'pl', 'en', 'de'):",
-        value=st.session_state['language_iso']
+        value = st.session_state['language_iso']
         )
 
         # ======================
@@ -172,25 +173,27 @@ if uploaded_file is not None:
         if st.session_state['script_for_translation']:
             translated_edited_text = st.text_area(
                 'Przetłumaczony scrypt',
-                value=st.session_state['script_for_translation']
+                value = st.session_state['script_for_translation'],
+                # Key links the UI component with st.session_state["script_for_translation"]
+                key = 'script_for_translation'
             )
-
-        # --- Button to download the translated text as an SRT file ---
-        st.download_button(
-            label="Pobierz przetłumaczoną transkrypcję jako plik .srt",
-            data= translated_edited_text if 'translated_edited_text' in locals() else st.session_state["script_for_translation"],  # Zawartość do zapisania
-            # --- Using the filename to create the translation filename ---
-            file_name=f"{file_name_without_ext}.srt",  # file name
-            mime="text/plain",  # MIME type for text file
-        )
 
         # --- Button to download the orginal text as an SRT file ---
         st.download_button(
-            label="Pobierz orginalną transkrypcję jako plik .srt",
-            data= orginal_edited_text if 'orginal_edited_text' in locals() else st.session_state["audio_as_text"],  # Zawartość do zapisania
+            label = "Pobierz orginalną transkrypcję jako plik .srt",
+            data = orginal_edited_text if 'orginal_edited_text' in locals() else st.session_state["audio_as_text"],  # Zawartość do zapisania
             # --- Using the filename to create the translation filename ---
-            file_name=f"{file_name_without_ext}.srt",  # file name
-            mime="text/plain",  # MIME type for text file
+            file_name = f"{file_name_without_ext}.srt",  # file name
+            mime = "text/plain",  # MIME type for text file
+        )
+
+        # --- Button to download the translated text as an SRT file ---
+        st.download_button(
+            label = "Pobierz przetłumaczoną transkrypcję jako plik .srt",
+            data = translated_edited_text if 'translated_edited_text' in locals() else st.session_state["script_for_translation"],  # Zawartość do zapisania
+            # --- Using the filename to create the translation filename ---
+            file_name = f"{file_name_without_ext}.srt",  # file name
+            mime = "text/plain",  # MIME type for text file
         )
 
 else:
