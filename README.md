@@ -35,19 +35,19 @@ Also in use:
 
 # In the future, the application will be expanded with new functionalities and its usability and performance will be improved.
 
-Project Structure
+# Project Structure
 =================
+```
 app/
 │
 ├── ai/
-│   └── transcrible.py
+│   └── transcrible.py  --> all function needed for recognition the langue of text, transcrible and translate of text
 │
 ├── audio/
-│   └── extract.py
+│   └── extract.py  --> function needed for extract mp3 format from Video
 │
 ├── config/
-│   └── settings.py
+│   └── settings.py  --> hardcode the AI model used in project
 │
-└── main.py
-
-<pre> ```text Project Structure ================= app/ │ ├── ai/ │ └── transcrible.py │ ├── audio/ │ └── extract.py │ ├── config/ │ └── settings.py │ └── main.py ``` </pre>
+└── main.py  --> main code of the app.
+```
