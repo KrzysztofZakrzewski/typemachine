@@ -21,6 +21,9 @@ The app extracts audio from a video, transcribes speech to text using OpenAI, al
 🚀 Installation & Setup
 1️⃣ Clone the repository
 git clone https://github.com/your-username/typemachine.git
+
+Switch to branch v2-lang-modules: git checkout v2-lang-modules 
+
 cd typemachine
 
 2️⃣ Create Conda environment (Make sure you have Conda installed (Anaconda or Miniconda)).
